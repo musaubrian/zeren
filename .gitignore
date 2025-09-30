@@ -1,0 +1,6 @@
+.zig-cache/
+zig-out/
+*.o
+
+# Incase the template didn't include this for some reason
+.env

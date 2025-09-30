@@ -90,7 +90,7 @@ pub const Window = struct {
     }
 
     pub fn shouldClose(window: *Window) bool {
-        return c.glfwWindowShouldClose(window.handle) != 0;
+        return c.glfwWindowShouldClose(window.handle) == c.GL_TRUE;
     }
 
     pub fn beginFrame(window: *Window) void {

@@ -12,16 +12,19 @@ pub fn main() !void {
     try Zeren.init();
     defer Zeren.deinit();
 
-    var window = try Zeren.Window.createWindow(1080, 720, "Zeren", null);
+    var window = try Zeren.Window.createWindow(800, 600, "Zeren", null);
     defer window.destroy();
 
-    var tringle = try examples.Triangle.init(true);
+    var tringle = try examples.Triangle.init(.Fill);
     defer tringle.deinit();
+    var rect = try examples.Rectangle.init(.None);
+    defer rect.deinit();
 
     while (!window.shouldClose()) {
         if (window.closeWindowEvt()) break;
         window.beginFrame();
         try tringle.draw();
+        try rect.draw();
         window.endFrame();
     }
 }

@@ -8,7 +8,7 @@ name: []const u8,
 vertex_shader: ?c.GLuint = null,
 fragment_shader: ?c.GLuint = null,
 
-/// Creates an openGL program
+/// Creates a shader program
 pub fn create(name: []const u8) Zepr {
     return Zepr{ .name = name, .id = c.glCreateProgram() };
 }
@@ -40,6 +40,10 @@ pub fn compile(zepr: *Zepr) !void {
     var success: c.GLint = undefined;
     c.glGetProgramiv(zepr.id, c.GL_LINK_STATUS, &success);
     if (success == 0) return error.ProgramLinkingFailed;
+}
+
+pub fn destroy(zepr: *Zepr) void {
+    c.glDeleteProgram(zepr.id);
 }
 
 const Zepr = @This();

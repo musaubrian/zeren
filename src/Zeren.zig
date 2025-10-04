@@ -108,6 +108,7 @@ pub const Window = struct {
 
     pub fn endFrame(self: *Window) void {
         c.glfwSwapBuffers(self.handle);
+        c.glfwSwapInterval(1);
         c.glfwPollEvents();
     }
 };

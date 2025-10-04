@@ -12,7 +12,7 @@ pub fn main() !void {
     try Zeren.init();
     defer Zeren.deinit();
 
-    var window = try Zeren.Window.createWindow(800, 600, "Zeren", null);
+    var window = try Zeren.Window.createWindow(800, 600, "Zeren", .{ .bg_color = null, .fullscreen = true });
     defer window.destroy();
 
     var tringle = try examples.Triangle.init(.None);

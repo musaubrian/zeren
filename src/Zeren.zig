@@ -63,15 +63,20 @@ fn frameBufferSizeCallback(window: ?*c.GLFWwindow, width: c_int, height: c_int) 
     c.glViewport(0, 0, width, height);
 }
 
+const WindowOptions = struct {
+    bg_color: ?Color,
+    fullscreen: bool = false,
+};
+
 pub const Window = struct {
     handle: *c.struct_GLFWwindow,
 
-    pub fn createWindow(w: i32, h: i32, title: []const u8, bg_color: ?Color) !Window {
+    pub fn createWindow(w: i32, h: i32, title: []const u8, opts: WindowOptions) !Window {
         log.debug("Creating Window", .{});
-        const window = c.glfwCreateWindow(@intCast(w), @intCast(h), @ptrCast(title.ptr), c.glfwGetPrimaryMonitor(), null);
+        const window = c.glfwCreateWindow(@intCast(w), @intCast(h), @ptrCast(title.ptr), if (opts.fullscreen) c.glfwGetPrimaryMonitor() else null, null);
         if (window == null) return error.ZWindowCreationErr;
         c.glfwMakeContextCurrent(window);
-        const clear_color = if (bg_color != null) bg_color.? else Color{ .r = 24, .g = 24, .b = 24, .a = 255 };
+        const clear_color = if (opts.bg_color != null) opts.bg_color.? else Color{ .r = 24, .g = 24, .b = 24, .a = 255 };
         setClearColor(clear_color);
 
         c.glViewport(0, 0, @intCast(w), @intCast(h));

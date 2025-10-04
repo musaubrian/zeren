@@ -58,6 +58,11 @@ pub const Keys = struct {
     pub const Q = c.GLFW_KEY_Q;
 };
 
+fn frameBufferSizeCallback(window: ?*c.GLFWwindow, width: c_int, height: c_int) callconv(.c) void {
+    _ = window;
+    c.glViewport(0, 0, width, height);
+}
+
 pub const Window = struct {
     handle: *c.struct_GLFWwindow,
 
@@ -68,6 +73,9 @@ pub const Window = struct {
         c.glfwMakeContextCurrent(window);
         const clear_color = if (bg_color != null) bg_color.? else Color{ .r = 24, .g = 24, .b = 24, .a = 255 };
         setClearColor(clear_color);
+
+        c.glViewport(0, 0, @intCast(w), @intCast(h));
+        _ = c.glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
         return Window{ .handle = window.? };
     }
 

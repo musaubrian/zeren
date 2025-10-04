@@ -321,6 +321,6 @@ pub const RainbowTriangle = struct {
         c.glDeleteVertexArrays(1, &triangle.VAO);
         c.glDeleteBuffers(1, &triangle.VBO);
         triangle.program.destroy();
-        std.log.debug("[PULSE-TRI]: Destroyed", .{});
+        std.log.debug("[RAINBOW-TRI]: Destroyed", .{});
     }
 };

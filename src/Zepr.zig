@@ -2,15 +2,39 @@ const c = @cImport({
     @cDefine("GL_GLEXT_PROTOTYPES", "");
     @cInclude("GL/gl.h");
 });
-
+const std = @import("std");
 id: c.GLuint = undefined,
 name: []const u8,
 vertex_shader: ?c.GLuint = null,
 fragment_shader: ?c.GLuint = null,
+allocator: std.mem.Allocator,
 
 /// Creates a shader program
-pub fn create(name: []const u8) Zepr {
-    return Zepr{ .name = name, .id = c.glCreateProgram() };
+pub fn create(allocator: std.mem.Allocator, name: []const u8) Zepr {
+    return Zepr{
+        .name = name,
+        .id = c.glCreateProgram(),
+        .allocator = allocator,
+    };
+}
+
+fn readFromFile(zepr: *Zepr, path: []const u8) ![]const u8 {
+    const file = try std.fs.openFileAbsolute(
+        try std.fs.cwd().realpathAlloc(zepr.allocator, path),
+        .{ .mode = .read_only },
+    );
+    defer file.close();
+    const file_buff = try file.readToEndAlloc(zepr.allocator, 4096);
+
+    return file_buff;
+}
+
+pub fn loadVertexShaderFromFile(zepr: *Zepr, path: []const u8) !void {
+    try zepr.addVertexShader(try zepr.readFromFile(path));
+}
+
+pub fn loadFragmentShaderFromFile(zepr: *Zepr, path: []const u8) !void {
+    try zepr.addFragmentShader(try zepr.readFromFile(path));
 }
 
 pub fn addVertexShader(zepr: *Zepr, source: []const u8) !void {

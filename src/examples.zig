@@ -6,25 +6,6 @@ const c = @cImport({
 const std = @import("std");
 const Zepr = @import("Zepr.zig");
 
-const vertex_shader =
-    \\#version 330 core
-    \\layout (location = 0) in vec3 aPos;
-    \\
-    \\void main()
-    \\{
-    \\    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-    \\}
-;
-
-const fragment_shader =
-    \\#version 330 core
-    \\out vec4 FragColor;
-    \\void main()
-    \\{
-    \\    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-    \\}
-;
-
 const FillType = enum { None, Fill };
 
 pub const Triangle = struct {
@@ -33,10 +14,10 @@ pub const Triangle = struct {
     VAO: u32 = undefined,
     fill: FillType = .None,
 
-    pub fn init(fill: FillType) !Triangle {
-        var prog = Zepr.create("triangle");
-        try prog.addVertexShader(vertex_shader);
-        try prog.addFragmentShader(fragment_shader);
+    pub fn init(allocator: std.mem.Allocator, fill: FillType) !Triangle {
+        var prog = Zepr.create(allocator, "triangle");
+        try prog.loadVertexShaderFromFile("./shaders/basic-tringle-vt.glsl");
+        try prog.loadFragmentShaderFromFile("./shaders/basic-frag.glsl");
         try prog.compile();
 
         const vertices = [_]f32{
@@ -91,10 +72,10 @@ pub const Rectangle = struct {
     EBO: u32 = undefined,
     fill: FillType = .None,
 
-    pub fn init(fill: FillType) !Rectangle {
-        var prog = Zepr.create("rectangle");
-        try prog.addVertexShader(vertex_shader);
-        try prog.addFragmentShader(fragment_shader);
+    pub fn init(allocator: std.mem.Allocator, fill: FillType) !Rectangle {
+        var prog = Zepr.create(allocator, "rectangle");
+        try prog.loadVertexShaderFromFile("./shaders/basic-tringle-vt.glsl");
+        try prog.loadFragmentShaderFromFile("./shaders/basic-frag.glsl");
         try prog.compile();
 
         const vertices = [_]f32{
@@ -163,7 +144,7 @@ pub const PulsingTriangle = struct {
     VAO: u32 = undefined,
     fill: FillType = .None,
 
-    pub fn init(fill: FillType) !PulsingTriangle {
+    pub fn init(allocator: std.mem.Allocator, fill: FillType) !PulsingTriangle {
         const vertex_shader_src: []const u8 =
             \\#version 330 core
             \\layout (location = 0) in vec3 aPos;
@@ -181,7 +162,7 @@ pub const PulsingTriangle = struct {
             \\   FragColor = ourColor;
             \\}
         ;
-        var prog = Zepr.create("cc-tri");
+        var prog = Zepr.create(allocator, "cc-tri");
         try prog.addVertexShader(vertex_shader_src);
         try prog.addFragmentShader(frag_shader_src);
         try prog.compile();
@@ -243,7 +224,7 @@ pub const RainbowTriangle = struct {
     VAO: u32 = undefined,
     fill: FillType = .None,
 
-    pub fn init(fill: FillType) !RainbowTriangle {
+    pub fn init(allocator: std.mem.Allocator, fill: FillType) !RainbowTriangle {
         const vertex_shader_src: []const u8 =
             \\#version 330 core
             \\layout (location = 0) in vec3 aPos;
@@ -264,7 +245,7 @@ pub const RainbowTriangle = struct {
             \\   FragColor = vec4(rbColor, 1.0f);
             \\}
         ;
-        var prog = Zepr.create("cc-tri");
+        var prog = Zepr.create(allocator, "rb-tri");
         try prog.addVertexShader(vertex_shader_src);
         try prog.addFragmentShader(frag_shader_src);
         try prog.compile();

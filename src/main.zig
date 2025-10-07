@@ -2,6 +2,7 @@ const std = @import("std");
 const Zeren = @import("Zeren.zig");
 const Zerui = @import("Zerui.zig");
 const examples = @import("examples.zig");
+const Zpm = @import("Zpm.zig");
 
 pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -24,6 +25,10 @@ pub fn main() !void {
 
     var rb_tringle = try examples.RainbowTriangle.init(allocator, .Fill);
     defer rb_tringle.deinit();
+
+    var ppm = Zpm.init(allocator);
+    try ppm.loadAndParse("./assets/sample_640×426.ppm");
+    try ppm.renderText();
 
     while (!window.shouldClose()) {
         if (window.closeWindowEvt()) break;
